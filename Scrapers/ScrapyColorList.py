@@ -27,11 +27,14 @@ for row in table:
         r, g, b = rgbMatch.group(2), rgbMatch.group(3), rgbMatch.group(4)
         hex = hexMatch.group(1)
         hex = str(hex)
-        count += 1
         line = "{} = ({}, {}, {}, '{}')\n".format(name.replace(' ', '').upper(), r, g, b, hex)
         colorsList.append((name, int(r), int(g), int(b), hex))
-        print(colorsList[len(colorsList) - 1])
-for row in sorted(colorsList[1:]):
+
+colorsList.pop(0)
+colorsSet = set(colorsList)
+colorsList = list(colorsSet)
+for row in sorted(colorsList):
     line = "{} = ({}, {}, {}, '{}')\n".format(*row)
     outFile.write(line)
-print(count)
+
+
