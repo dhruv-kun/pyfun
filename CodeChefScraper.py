@@ -1,4 +1,4 @@
-from  bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from urllib.parse import urljoin
 from urllib.error import HTTPError
@@ -68,7 +68,7 @@ def database_store():
             code = problem['code']
             sub = problem['successfulSubmission']
             acc = problem['accuracy']
-            sql = """INSERT INTO {}(Id, Name, Code, Submission, Accuracy, Solved) 
+            sql = """INSERT INTO {}(Id, Name, Code, Submission, Accuracy, Solved)
             VALUES (?, ?, ?, ?, ?, ?)
             """
             sql = sql.format(ty)
@@ -111,7 +111,8 @@ def main():
                 total += len(allproblems)
                 all_data[ty] = deepcopy(allproblems)
                 print('Done for type "{}"'.format(ty))
-                print('Total problems got {} for {}'.format(len(allproblems), ty))
+                print('Total problems got {} for {}\
+                    '.format(len(allproblems), ty))
                 print()
 
             print('Done for all Problems.')
