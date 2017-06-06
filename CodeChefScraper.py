@@ -79,10 +79,10 @@ def database_store():
 def update_problem(prob_type, prob_code, status='Yes'):
     db = sqlite3.connect('codechef.db')
     cursor = db.cursor()
-    sql = """UPDATE beginner
+    sql = """UPDATE {}
     SET Solved = ?
     WHERE code = ?
-    """
+    """.format(prob_type)
     cursor.execute(sql, (status, prob_code, ))
     db.commit()
 
