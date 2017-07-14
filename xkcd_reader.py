@@ -76,7 +76,8 @@ def save_image(image, data):
 
 def main():
     if os.path.isfile('metadata.pkl'):
-        data = pickle.load(open('metadata.pkl', 'rb'))
+        with open('metadata.pkl', 'rb') as meta:
+            data = pickle.load(meta)
     else:
         data = {
             'LastComicPage': 0,
@@ -119,8 +120,6 @@ def main():
             continue
 
     data['LastComicPage'] = count - 1
-    if os.path.isfile('metadata.pkl'):
-        os.remove('metadata.pkl')
     with open('metadata.pkl', 'wb') as meta:
         pickle.dump(data, meta)
 
