@@ -24,12 +24,13 @@ def get_image(count=1):
     if req.status_code == 404:
         print('No More Comics')
         return False
-
     soup = BeautifulSoup(req.text, 'lxml')
+    comic_titile = soup.find(attrs={'id': 'ctitle'})
     comic = soup.find(attrs={'id': 'comic'})
     image = {
         'number': count,
-        'title': comic.img.get('title'),
+        'title': comic_titile.text,
+        'content': comic.img.get('title'),
         'link': urljoin('https:', comic.img.get('src')),
         'format': comic.img.get('src').split('.')[-1]
     }
@@ -44,14 +45,33 @@ def get_image(count=1):
 def show_image(image_data):
     file = 'temp.' + image_data['format']
     options = ['Favorite', 'Next', 'Close']
-    title = 'www.xkcd.com/{}/'.format(image_data['number'])
-    message = image_data['title']
+    title = '{}: {}'.format(
+        image_data['number'], image_data['title'])
+    message = image_data['content']
     select = gui.buttonbox(
-        title=title,
-        choices=options,
-        image=file,
-        msg=message)
+        title=title, choices=options,
+        image=file, msg=message)
+    if select is None:
+        select = 'Close'
     return select
+
+
+def save_image(image, data):
+    count = image['number']
+    if count - 1 in data['FavoriteComics']:
+        msg = 'This image is already in your favorites.'
+        title = 'File Exists.'
+        gui.msgbox(msg=msg, title=title)
+    else:
+        from_file = 'temp.' + image['format']
+        to_file = image['title'].strip('.') + '.' + image['format']
+        path = os.path.expanduser('~')
+        path = os.path.join(path, 'Pictures', 'xkcd')
+        to_file = os.path.join(path, to_file)
+        if not os.path.isdir(path):
+            os.makedirs(path)
+        os.rename(from_file, to_file)
+        data['FavoriteComics'].add(count - 1)
 
 
 def main():
@@ -91,23 +111,13 @@ def main():
         count += 1
         if opt == 'Close':
             break
+
         elif opt == 'Favorite':
-            if count - 1 in data['FavoriteComics']:
-                msg = 'This image is already in your favorites.'
-                title = 'File Exists.'
-                gui.msgbox(msg=msg, title=title)
-            else:
-                from_file = 'temp.' + image['format']
-                to_file = image['title'] + '.' + image['format']
-                path = os.path.expanduser('~')
-                path = os.path.join(path, 'Pictures', 'xkcd')
-                to_file = os.path.join(path, to_file)
-                if not os.path.isdir(path):
-                    os.makedirs(path)
-                os.rename(from_file, to_file)
-                data['FavoriteComics'].add(count - 1)
+            save_image(image, data)
+
         elif opt == 'Next':
             continue
+
     data['LastComicPage'] = count - 1
     if os.path.isfile('metadata.pkl'):
         os.remove('metadata.pkl')
