@@ -1,5 +1,5 @@
-# Simple Tools
-This repository contains short and simple tools for small redundant tasks.
+# Small Simple Python Scripts
+This repository contains short and simple scripts for small redundant tasks or just for fun.
 
 ## CodechefScraper
 A script which scrapes data about the problems from codechef stores data in a database.
